@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.evaluation.mapper.EvaluationTeacherMapper">
+    
+    <resultMap type="EvaluationTeacher" id="EvaluationTeacherResult">
+        <result property="id"    column="id"    />
+        <result property="target"    column="target"    />
+        <result property="targetId"    column="target_id"    />
+        <result property="content"    column="content"    />
+        <result property="scores"    column="scores"    />
+        <result property="name"    column="name"    />
+        <result property="nameId"    column="name_id"    />
+        <result property="isevaluation"    column="isevaluation"    />
+        <result property="timeEvaluation"    column="time_evaluation"    />
+    </resultMap>
+
+    <sql id="selectEvaluationTeacherVo">
+        select id, target, target_id, content, scores, name, name_id, isevaluation, time_evaluation from evaluation_teacher
+    </sql>
+
+    <select id="selectEvaluationTeacherList" parameterType="EvaluationTeacher" resultMap="EvaluationTeacherResult">
+        <include refid="selectEvaluationTeacherVo"/>
+        <where>  
+            <if test="target != null  and target != ''"> and target = #{target}</if>
+            <if test="targetId != null  and targetId != ''"> and target_id = #{targetId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="params.beginScores != null and params.beginScores != '' and params.endScores != null and params.endScores != ''"> and scores between #{params.beginScores} and #{params.endScores}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="nameId != null  and nameId != ''"> and name_id = #{nameId}</if>
+            <if test="isevaluation != null "> and isevaluation = #{isevaluation}</if>
+            <if test="params.beginTimeEvaluation != null and params.beginTimeEvaluation != '' and params.endTimeEvaluation != null and params.endTimeEvaluation != ''"> and time_evaluation between #{params.beginTimeEvaluation} and #{params.endTimeEvaluation}</if>
+        </where>
+    </select>
+
+    <select id="selectEvaluationTeacherByIsevaluation" parameterType="int" resultMap="EvaluationTeacherResult">
+        <include refid="selectEvaluationTeacherVo"/>
+        where isevaluation = #{value}
+    </select>
+
+    <select id="selectEvaluationTeacherById" parameterType="Long" resultMap="EvaluationTeacherResult">
+        <include refid="selectEvaluationTeacherVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEvaluationTeacher" parameterType="EvaluationTeacher">
+        insert into evaluation_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="target != null">target,</if>
+            <if test="targetId != null">target_id,</if>
+            <if test="content != null">content,</if>
+            <if test="scores != null">scores,</if>
+            <if test="name != null">name,</if>
+            <if test="nameId != null">name_id,</if>
+            <if test="isevaluation != null">isevaluation,</if>
+            <if test="timeEvaluation != null">time_evaluation,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="target != null">#{target},</if>
+            <if test="targetId != null">#{targetId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="scores != null">#{scores},</if>
+            <if test="name != null">#{name},</if>
+            <if test="nameId != null">#{nameId},</if>
+            <if test="isevaluation != null">#{isevaluation},</if>
+            <if test="timeEvaluation != null">#{timeEvaluation},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEvaluationTeacher" parameterType="EvaluationTeacher">
+        update evaluation_teacher
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="target != null">target = #{target},</if>
+            <if test="targetId != null">target_id = #{targetId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="scores != null">scores = #{scores},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="nameId != null">name_id = #{nameId},</if>
+            <if test="isevaluation != null">isevaluation = #{isevaluation},</if>
+            <if test="timeEvaluation != null">time_evaluation = #{timeEvaluation},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEvaluationTeacherById" parameterType="Long">
+        delete from evaluation_teacher where id = #{id}
+    </delete>
+
+    <delete id="deleteEvaluationTeacherByIds" parameterType="String">
+        delete from evaluation_teacher where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

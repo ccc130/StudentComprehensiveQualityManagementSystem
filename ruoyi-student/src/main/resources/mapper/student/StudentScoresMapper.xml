@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.student.mapper.StudentScoresMapper">
+    
+    <resultMap type="StudentScores" id="StudentScoresResult">
+        <result property="courseId"    column="course_id"    />
+        <result property="schoolYear"    column="school_year"    />
+        <result property="semester"    column="semester"    />
+        <result property="courseCode"    column="course_code"    />
+        <result property="courseName"    column="course_name"    />
+        <result property="curriculum"    column="curriculum"    />
+        <result property="credit"    column="credit"    />
+        <result property="scoreRemarks"    column="score_remarks"    />
+        <result property="gpa"    column="gpa"    />
+        <result property="gradesNature"    column="grades_nature"    />
+        <result property="degreeCourse"    column="degree_course"    />
+        <result property="collegeOffering"    column="college_offering"    />
+        <result property="courseMarking"    column="course_marking"    />
+        <result property="courseCategory"    column="course_category"    />
+        <result property="courseOwnership"    column="course_ownership"    />
+        <result property="teachingClass"    column="teaching_class"    />
+        <result property="courseTeacher"    column="course_teacher"    />
+        <result property="teachingMethod"    column="teaching_method"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="studentName"    column="student_name"    />
+        <result property="studentMarking"    column="student_marking"    />
+        <result property="scores"    column="scores"    />
+        <result property="scoresMarking"    column="scores_marking"    />
+        <result property="gradePoint"    column="grade_point"    />
+    </resultMap>
+
+    <sql id="selectStudentScoresVo">
+        select course_id, school_year, semester, course_code, course_name, curriculum, credit, score_remarks, gpa, grades_nature, degree_course, college_offering, course_marking, course_category, course_ownership, teaching_class, course_teacher, teaching_method, student_id, student_name, student_marking, scores, scores_marking, grade_point from student_scores
+    </sql>
+
+    <select id="selectStudentScoresList" parameterType="StudentScores" resultMap="StudentScoresResult">
+        <include refid="selectStudentScoresVo"/>
+        <where>  
+            <if test="schoolYear != null "> and school_year = #{schoolYear}</if>
+            <if test="semester != null "> and semester = #{semester}</if>
+            <if test="courseCode != null  and courseCode != ''"> and course_code = #{courseCode}</if>
+            <if test="courseName != null  and courseName != ''"> and course_name like concat('%', #{courseName}, '%')</if>
+            <if test="curriculum != null "> and curriculum = #{curriculum}</if>
+            <if test="credit != null "> and credit = #{credit}</if>
+            <if test="scoreRemarks != null  and scoreRemarks != ''"> and score_remarks = #{scoreRemarks}</if>
+            <if test="gpa != null "> and gpa = #{gpa}</if>
+            <if test="gradesNature != null "> and grades_nature = #{gradesNature}</if>
+            <if test="degreeCourse != null "> and degree_course = #{degreeCourse}</if>
+            <if test="collegeOffering != null  and collegeOffering != ''"> and college_offering = like concat('%', #{collegeOffering}, '%')</if>
+            <if test="courseMarking != null "> and course_marking = #{courseMarking}</if>
+            <if test="courseCategory != null "> and course_category = #{courseCategory}</if>
+            <if test="courseOwnership != null  and courseOwnership != ''"> and course_ownership = #{courseOwnership}</if>
+            <if test="teachingClass != null  and teachingClass != ''"> and teaching_class like concat('%', #{teachingClass}, '%')</if>
+            <if test="courseTeacher != null  and courseTeacher != ''"> and course_teacher = #{courseTeacher}</if>
+            <if test="teachingMethod != null "> and teaching_method = #{teachingMethod}</if>
+            <if test="studentId != null "> and student_id = #{studentId}</if>
+            <if test="studentName != null  and studentName != ''"> and student_name like concat('%', #{studentName}, '%')</if>
+            <if test="studentMarking != null  and studentMarking != ''"> and student_marking = #{studentMarking}</if>
+            <if test="scores != null "> and scores = #{scores}</if>
+            <if test="scoresMarking != null "> and scores_marking = #{scoresMarking}</if>
+            <if test="gradePoint != null "> and grade_point = #{gradePoint}</if>
+        </where>
+    </select>
+
+    <select id="selectStudentScoresByCourseId" parameterType="Long" resultMap="StudentScoresResult">
+        <include refid="selectStudentScoresVo"/>
+        where course_id = #{courseId}
+    </select>
+
+    <select id="sumGradePointByStudentId" parameterType="StudentScores" resultType="Double">
+        SELECT SUM(grade_point) AS totalGradePoint
+        FROM student_scores
+        WHERE student_id = #{studentId}
+          AND school_year = #{schoolYear}
+          AND semester = #{semester}
+    </select>
+
+    <insert id="insertStudentScores" parameterType="StudentScores" useGeneratedKeys="true" keyProperty="courseId">
+        insert into student_scores
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="schoolYear != null">school_year,</if>
+            <if test="semester != null">semester,</if>
+            <if test="courseCode != null and courseCode != ''">course_code,</if>
+            <if test="courseName != null and courseName != ''">course_name,</if>
+            <if test="curriculum != null">curriculum,</if>
+            <if test="credit != null">credit,</if>
+            <if test="scoreRemarks != null">score_remarks,</if>
+            <if test="gpa != null">gpa,</if>
+            <if test="gradesNature != null">grades_nature,</if>
+            <if test="degreeCourse != null">degree_course,</if>
+            <if test="collegeOffering != null and collegeOffering != ''">college_offering,</if>
+            <if test="courseMarking != null">course_marking,</if>
+            <if test="courseCategory != null">course_category,</if>
+            <if test="courseOwnership != null">course_ownership,</if>
+            <if test="teachingClass != null and teachingClass != ''">teaching_class,</if>
+            <if test="courseTeacher != null and courseTeacher != ''">course_teacher,</if>
+            <if test="teachingMethod != null">teaching_method,</if>
+            <if test="studentId != null">student_id,</if>
+            <if test="studentName != null and studentName != ''">student_name,</if>
+            <if test="studentMarking != null">student_marking,</if>
+            <if test="scores != null">scores,</if>
+            <if test="scoresMarking != null">scores_marking,</if>
+            <if test="gradePoint != null">grade_point,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="schoolYear != null">#{schoolYear},</if>
+            <if test="semester != null">#{semester},</if>
+            <if test="courseCode != null and courseCode != ''">#{courseCode},</if>
+            <if test="courseName != null and courseName != ''">#{courseName},</if>
+            <if test="curriculum != null">#{curriculum},</if>
+            <if test="credit != null">#{credit},</if>
+            <if test="scoreRemarks != null">#{scoreRemarks},</if>
+            <if test="gpa != null">#{gpa},</if>
+            <if test="gradesNature != null">#{gradesNature},</if>
+            <if test="degreeCourse != null">#{degreeCourse},</if>
+            <if test="collegeOffering != null and collegeOffering != ''">#{collegeOffering},</if>
+            <if test="courseMarking != null">#{courseMarking},</if>
+            <if test="courseCategory != null">#{courseCategory},</if>
+            <if test="courseOwnership != null">#{courseOwnership},</if>
+            <if test="teachingClass != null and teachingClass != ''">#{teachingClass},</if>
+            <if test="courseTeacher != null and courseTeacher != ''">#{courseTeacher},</if>
+            <if test="teachingMethod != null">#{teachingMethod},</if>
+            <if test="studentId != null">#{studentId},</if>
+            <if test="studentName != null and studentName != ''">#{studentName},</if>
+            <if test="studentMarking != null">#{studentMarking},</if>
+            <if test="scores != null">#{scores},</if>
+            <if test="scoresMarking != null">#{scoresMarking},</if>
+            <if test="gradePoint != null">#{gradePoint},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStudentScores" parameterType="StudentScores">
+        update student_scores
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="schoolYear != null">school_year = #{schoolYear},</if>
+            <if test="semester != null">semester = #{semester},</if>
+            <if test="courseCode != null and courseCode != ''">course_code = #{courseCode},</if>
+            <if test="courseName != null and courseName != ''">course_name = #{courseName},</if>
+            <if test="curriculum != null">curriculum = #{curriculum},</if>
+            <if test="credit != null">credit = #{credit},</if>
+            <if test="scoreRemarks != null">score_remarks = #{scoreRemarks},</if>
+            <if test="gpa != null">gpa = #{gpa},</if>
+            <if test="gradesNature != null">grades_nature = #{gradesNature},</if>
+            <if test="degreeCourse != null">degree_course = #{degreeCourse},</if>
+            <if test="collegeOffering != null and collegeOffering != ''">college_offering = #{collegeOffering},</if>
+            <if test="courseMarking != null">course_marking = #{courseMarking},</if>
+            <if test="courseCategory != null">course_category = #{courseCategory},</if>
+            <if test="courseOwnership != null">course_ownership = #{courseOwnership},</if>
+            <if test="teachingClass != null and teachingClass != ''">teaching_class = #{teachingClass},</if>
+            <if test="courseTeacher != null and courseTeacher != ''">course_teacher = #{courseTeacher},</if>
+            <if test="teachingMethod != null">teaching_method = #{teachingMethod},</if>
+            <if test="studentId != null">student_id = #{studentId},</if>
+            <if test="studentName != null and studentName != ''">student_name = #{studentName},</if>
+            <if test="studentMarking != null">student_marking = #{studentMarking},</if>
+            <if test="scores != null">scores = #{scores},</if>
+            <if test="scoresMarking != null">scores_marking = #{scoresMarking},</if>
+            <if test="gradePoint != null">grade_point = #{gradePoint},</if>
+        </trim>
+        where course_id = #{courseId}
+    </update>
+
+    <delete id="deleteStudentScoresByCourseId" parameterType="Long">
+        delete from student_scores where course_id = #{courseId}
+    </delete>
+
+    <delete id="deleteStudentScoresByCourseIds" parameterType="String">
+        delete from student_scores where course_id in 
+        <foreach item="courseId" collection="array" open="(" separator="," close=")">
+            #{courseId}
+        </foreach>
+    </delete>
+</mapper>

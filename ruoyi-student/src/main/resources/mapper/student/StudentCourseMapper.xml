@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.student.mapper.StudentCourseMapper">
+    
+    <resultMap type="StudentCourse" id="StudentCourseResult">
+        <result property="id"    column="id"    />
+        <result property="courseName"    column="course_name"    />
+        <result property="courseCode"    column="course_code"    />
+        <result property="curriculum"    column="curriculum"    />
+        <result property="credit"    column="credit"    />
+        <result property="gpa"    column="gpa"    />
+        <result property="collegeOffering"    column="college_offering"    />
+        <result property="courseMarking"    column="course_marking"    />
+        <result property="courseCategory"    column="course_category"    />
+        <result property="courseOwnership"    column="course_ownership"    />
+        <result property="teachingMethod"    column="teaching_method"    />
+    </resultMap>
+
+    <sql id="selectStudentCourseVo">
+        select id, course_name, course_code, curriculum, credit, gpa, college_offering, course_marking, course_category, course_ownership, teaching_method from student_course
+    </sql>
+
+    <select id="selectStudentCourseList" parameterType="StudentCourse" resultMap="StudentCourseResult">
+        <include refid="selectStudentCourseVo"/>
+        <where>  
+            <if test="courseName != null  and courseName != ''"> and course_name like concat('%', #{courseName}, '%')</if>
+            <if test="courseCode != null  and courseCode != ''"> and course_code = #{courseCode}</if>
+            <if test="curriculum != null "> and curriculum = #{curriculum}</if>
+            <if test="collegeOffering != null  and collegeOffering != ''"> and college_offering = #{collegeOffering}</if>
+            <if test="courseMarking != null "> and course_marking = #{courseMarking}</if>
+            <if test="courseCategory != null "> and course_category = #{courseCategory}</if>
+            <if test="courseOwnership != null  and courseOwnership != ''"> and course_ownership = #{courseOwnership}</if>
+            <if test="teachingMethod != null "> and teaching_method = #{teachingMethod}</if>
+        </where>
+    </select>
+
+    <select id="searchStudentCourseList" parameterType="StudentCourse" resultMap="StudentCourseResult">
+        <include refid="selectStudentCourseVo"/>
+        where course_code like concat('%', #{courseCode}, '%')
+    </select>
+
+    <select id="selectStudentCourseById" parameterType="Long" resultMap="StudentCourseResult">
+        <include refid="selectStudentCourseVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectStudentCourseByCourseCode" parameterType="String" resultMap="StudentCourseResult">
+        <include refid="selectStudentCourseVo"/>
+        where course_code = #{courseCode}
+    </select>
+
+    <insert id="insertStudentCourse" parameterType="StudentCourse">
+        insert into student_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="courseName != null and courseName != ''">course_name,</if>
+            <if test="courseCode != null">course_code,</if>
+            <if test="curriculum != null">curriculum,</if>
+            <if test="credit != null">credit,</if>
+            <if test="gpa != null">gpa,</if>
+            <if test="collegeOffering != null and collegeOffering != ''">college_offering,</if>
+            <if test="courseMarking != null">course_marking,</if>
+            <if test="courseCategory != null">course_category,</if>
+            <if test="courseOwnership != null">course_ownership,</if>
+            <if test="teachingMethod != null">teaching_method,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="courseName != null and courseName != ''">#{courseName},</if>
+            <if test="courseCode != null">#{courseCode},</if>
+            <if test="curriculum != null">#{curriculum},</if>
+            <if test="credit != null">#{credit},</if>
+            <if test="gpa != null">#{gpa},</if>
+            <if test="collegeOffering != null and collegeOffering != ''">#{collegeOffering},</if>
+            <if test="courseMarking != null">#{courseMarking},</if>
+            <if test="courseCategory != null">#{courseCategory},</if>
+            <if test="courseOwnership != null">#{courseOwnership},</if>
+            <if test="teachingMethod != null">#{teachingMethod},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStudentCourse" parameterType="StudentCourse">
+        update student_course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="courseName != null and courseName != ''">course_name = #{courseName},</if>
+            <if test="courseCode != null">course_code = #{courseCode},</if>
+            <if test="curriculum != null">curriculum = #{curriculum},</if>
+            <if test="credit != null">credit = #{credit},</if>
+            <if test="gpa != null">gpa = #{gpa},</if>
+            <if test="collegeOffering != null and collegeOffering != ''">college_offering = #{collegeOffering},</if>
+            <if test="courseMarking != null">course_marking = #{courseMarking},</if>
+            <if test="courseCategory != null">course_category = #{courseCategory},</if>
+            <if test="courseOwnership != null">course_ownership = #{courseOwnership},</if>
+            <if test="teachingMethod != null">teaching_method = #{teachingMethod},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStudentCourseById" parameterType="Long">
+        delete from student_course where id = #{id}
+    </delete>
+
+    <delete id="deleteStudentCourseByIds" parameterType="String">
+        delete from student_course where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
